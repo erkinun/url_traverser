@@ -9,7 +9,8 @@ class PingActor extends Actor with ActorLogging {
   val pongActor = context.actorOf(PongActor.props, "pongActor")
 
   def receive = {
-  	case Initialize => 
+  	case Initialize =>
+      println("initialize msg has arrived!")
 	    log.info("In PingActor - starting ping-pong")
   	  pongActor ! PingMessage("ping")	
   	case PongActor.PongMessage(text) =>
