@@ -2,28 +2,46 @@ package com.asyaminor
 
 import akka.actor.ActorSystem
 
+import scala.io.StdIn
+
 object ApplicationMain extends App {
     
   println("starting the url traverser")
-  println("ping actors will be url actors!")
 
   //ask for a url to visit
+  handleIO()
 
-  //validate somehow
+  def callMediatorActor(url: String) = {
 
-  //ask a url actor to traverse it
+    //validate somehow
+
+    //ask a url actor to traverse it
     //this may become a mediator in future
 
-  //when you are finished, ask for another url
-    
-  val system = ActorSystem("UrlActorSystem")
+    //when you are finished, ask for another url
 
-  val urlActor = system.actorOf(UrlActor.props, "urlActor")
-  urlActor ! UrlActor.UrlMessage("some unknown site")
+    val system = ActorSystem("UrlActorSystem")
 
-  println("url actor got the msg")
+    val urlActor = system.actorOf(UrlActor.props, "urlActor")
+    urlActor ! UrlActor.UrlMessage("some unknown site")
 
-  //val pingActor = system.actorOf(PingActor.props, "pingActor")
-  //pingActor ! PingActor.Initialize
-  system.awaitTermination()
+    println("url actor got the msg")
+
+    system.awaitTermination()
+  }
+
+  def handleIO(): Unit = {
+    println("enter a url or 'q' to quit: ")
+
+    val url = StdIn.readLine()
+
+    url match {
+      case "q" => println("quitting...")
+      case _ => {
+        println("will handle url: " + url)
+        callMediatorActor(url)
+        handleIO()
+      }
+    }
+  }
 }
