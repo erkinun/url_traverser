@@ -5,7 +5,10 @@ import akka.actor.ActorSystem
 import scala.io.StdIn
 
 object ApplicationMain extends App {
-    
+
+
+  //TODO add nice --help section for the app
+  //that shows the possible commands and parameters
   println("starting the url traverser")
 
   //ask for a url to visit
