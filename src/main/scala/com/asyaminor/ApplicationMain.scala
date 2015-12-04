@@ -26,11 +26,9 @@ object ApplicationMain extends App {
     val system = ActorSystem("UrlActorSystem")
 
     val urlActor = system.actorOf(UrlActor.props, "urlActor")
-    urlActor ! UrlActor.UrlMessage("some unknown site")
+    urlActor ! UrlActor.UrlMessage(url)
 
     println("url actor got the msg")
-
-    system.awaitTermination()
   }
 
   def handleIO(): Unit = {
