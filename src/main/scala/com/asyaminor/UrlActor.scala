@@ -1,7 +1,8 @@
 package com.asyaminor
 
 import akka.actor.{Props, ActorLogging, Actor}
-import com.asyaminor.UrlActor.{Ack, UrlMessage}
+import com.asyaminor.MediatorActor.UrlMessage
+import com.asyaminor.UrlActor.Ack
 
 class UrlActor extends Actor with ActorLogging {
   def receive = {
@@ -14,7 +15,6 @@ class UrlActor extends Actor with ActorLogging {
 
 object UrlActor {
   val props = Props[UrlActor]
-  case class UrlMessage(url: String)
   case object Ack
 }
 

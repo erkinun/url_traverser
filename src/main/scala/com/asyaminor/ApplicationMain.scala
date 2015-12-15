@@ -25,10 +25,10 @@ object ApplicationMain extends App {
 
     val system = ActorSystem("UrlActorSystem")
 
-    val urlActor = system.actorOf(UrlActor.props, "urlActor")
-    urlActor ! UrlActor.UrlMessage(url)
+    val mediator = system.actorOf(MediatorActor.props, "mediator")
+    mediator ! MediatorActor.UrlMessage(url)
 
-    println("url actor got the msg")
+    println("mediator actor got the msg")
   }
 
   def handleIO(): Unit = {
