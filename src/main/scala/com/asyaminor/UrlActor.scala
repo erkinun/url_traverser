@@ -3,19 +3,18 @@ package com.asyaminor
 import akka.actor.{Props, ActorLogging, Actor}
 import com.asyaminor.MediatorActor.{HtmlResponse, UrlMessage}
 
-import scala.io.Source
+import scalaj.http.Http
 
 class UrlActor extends Actor with ActorLogging {
 
   def getContent(url: String): String = {
     val fullUrl = s"http://$url"
     log.info("full url will be fetched: " + fullUrl)
-    Source.fromURL(fullUrl).mkString
+    Http(fullUrl).asString.body
   }
 
   def receive = {
     case UrlMessage(url) =>
-      log.info("url: " + url + " will be traversed")
 
       val content = getContent(url)
 
