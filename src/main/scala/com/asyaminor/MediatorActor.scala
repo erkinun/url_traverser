@@ -3,6 +3,7 @@ package com.asyaminor
 import akka.actor.ActorSystem
 import akka.actor.{Props, Actor, ActorLogging}
 import com.asyaminor.MediatorActor.{HtmlResponse, UrlMessage}
+import com.asyaminor.ParserActor.HtmlMessage
 
 /**
   * Created by ERKIN on 14/12/2015.
@@ -11,6 +12,7 @@ class MediatorActor extends Actor with ActorLogging {
 
   val system = ActorSystem("UrlActorSystem")
   val urlActor = system.actorOf(UrlActor.props, "urlActor")
+  val parseActor = system.actorOf(ParserActor.props, "parserActor")
 
   //TODO measure how long it takes to process a url
 
@@ -29,6 +31,8 @@ class MediatorActor extends Actor with ActorLogging {
       val size = html.length
       log.info(s"$url is fetched with content length $size")
       log.debug(s"content is: $html")
+
+      parseActor ! HtmlMessage(html)
     }
   }
 }

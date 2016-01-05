@@ -31,18 +31,25 @@ object ApplicationMain extends App {
     println("mediator actor got the msg")
   }
 
+  def shutDown(): Unit = {
+    val system = ActorSystem("UrlActorSystem")
+
+    system.shutdown()
+  }
+
   def handleIO(): Unit = {
     println("enter a url or 'q' to quit: ")
 
     val url = StdIn.readLine()
 
     url match {
-      case "q" => println("quitting...")
-      case _ => {
+      case "q" =>
+        println("quitting...")
+        shutDown()
+      case _ =>
         println("will handle url: " + url)
         callMediatorActor(url)
         handleIO()
-      }
     }
   }
 }
