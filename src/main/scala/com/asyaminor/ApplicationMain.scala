@@ -17,6 +17,12 @@ object ApplicationMain extends App {
   def callMediatorActor(url: String) = {
 
     //validate somehow
+    val fullUrl = if (url.contains("http")) {
+      url
+    }
+    else {
+      "http" + url
+    }
 
     //ask a url actor to traverse it
     //this may become a mediator in future
@@ -26,7 +32,7 @@ object ApplicationMain extends App {
     val system = ActorSystem("UrlActorSystem")
 
     val mediator = system.actorOf(MediatorActor.props, "mediator")
-    mediator ! MediatorActor.UrlMessage(url)
+    mediator ! MediatorActor.UrlMessage(fullUrl)
 
     println("mediator actor got the msg")
   }

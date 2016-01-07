@@ -1,6 +1,7 @@
 package com.asyaminor
 
 import akka.actor.{Props, ActorLogging, Actor}
+import com.asyaminor.MediatorActor.UrlMessage
 import com.asyaminor.ParserActor.HtmlMessage
 import net.ruippeixotog.scalascraper.browser.Browser
 import net.ruippeixotog.scalascraper.dsl.DSL._
@@ -18,7 +19,11 @@ class ParserActor extends Actor with ActorLogging {
       val anchors: List[Element] = doc >> elementList("a")
 
       val links = anchors map (anc => anc.attr("href"))
-      links foreach(link => log.info(s"raw link: $link"))
+      links foreach(link => {
+        log.info(s"raw link: $link")
+        sender() ! UrlMessage(link)
+      })
+
   }
 }
 

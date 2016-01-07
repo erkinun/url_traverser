@@ -8,7 +8,7 @@ import scalaj.http.Http
 class UrlActor extends Actor with ActorLogging {
 
   def getContent(url: String): String = {
-    val fullUrl = s"http://$url"
+    val fullUrl = url
     log.info("full url will be fetched: " + fullUrl)
     Http(fullUrl).asString.body
   }
