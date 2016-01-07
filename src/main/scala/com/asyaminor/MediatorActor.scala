@@ -2,7 +2,7 @@ package com.asyaminor
 
 import akka.actor.ActorSystem
 import akka.actor.{Props, Actor, ActorLogging}
-import com.asyaminor.MediatorActor.{HtmlResponse, UrlMessage}
+import com.asyaminor.MediatorActor.{ShutDownMsg, HtmlResponse, UrlMessage}
 import com.asyaminor.ParserActor.HtmlMessage
 
 /**
@@ -34,6 +34,9 @@ class MediatorActor extends Actor with ActorLogging {
 
       parseActor ! HtmlMessage(html)
     }
+    case ShutDownMsg(reason) => {
+      context.system.shutdown()
+    }
   }
 }
 
@@ -41,4 +44,5 @@ object MediatorActor {
   val props = Props[MediatorActor]
   case class UrlMessage(url: String)
   case class HtmlResponse(html: String, url: String)
+  case class ShutDownMsg(reason: String)
 }

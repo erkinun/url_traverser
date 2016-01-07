@@ -1,6 +1,7 @@
 package com.asyaminor
 
 import akka.actor.ActorSystem
+import com.asyaminor.MediatorActor.ShutDownMsg
 
 import scala.io.StdIn
 
@@ -38,9 +39,13 @@ object ApplicationMain extends App {
   }
 
   def shutDown(): Unit = {
+    //val system = ActorSystem("UrlActorSystem")
+
+    //system.shutdown()
     val system = ActorSystem("UrlActorSystem")
 
-    system.shutdown()
+    val mediator = system.actorOf(MediatorActor.props, "mediator")
+    mediator ! MediatorActor.ShutDownMsg("user quitted")
   }
 
   def handleIO(): Unit = {
