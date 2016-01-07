@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.2.4" % "test")
 
 libraryDependencies +=  "org.scalaj" %% "scalaj-http" % "2.2.0"
+libraryDependencies += "net.ruippeixotog" %% "scala-scraper" % "0.1.2"
 
 fork in run := true
 
