@@ -15,7 +15,7 @@
         </encoder>
     </appender>
 
-    <logger name="com.asyaminor.MediatorActor">
+    <logger level="info" name="com.asyaminor.MediatorActor">
         <appender-ref ref="FILE"/>
     </logger>
 
