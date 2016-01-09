@@ -22,7 +22,7 @@ object ApplicationMain extends App {
       url
     }
     else {
-      "http" + url
+      "http://" + url
     }
 
     //ask a url actor to traverse it
