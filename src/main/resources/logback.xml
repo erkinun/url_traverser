@@ -15,8 +15,15 @@
         </encoder>
     </appender>
 
+    <appender name="FILE_URL" class="ch.qos.logback.core.FileAppender">
+        <file>/tmp/urls.log</file>
+        <encoder>
+            <pattern>%date %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <logger level="info" name="com.asyaminor.MediatorActor">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE_URL"/>
     </logger>
 
     <root level="debug">
