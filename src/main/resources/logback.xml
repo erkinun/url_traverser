@@ -22,7 +22,7 @@
         </encoder>
     </appender>
 
-    <logger level="info" name="com.asyaminor.MediatorActor">
+    <logger level="info" name="com.asyaminor.UrlActor">
         <appender-ref ref="FILE_URL"/>
     </logger>
 
