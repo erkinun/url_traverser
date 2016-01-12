@@ -18,6 +18,7 @@ class MediatorActor extends Actor with ActorLogging {
   val parseActor = system.actorOf(ParserActor.props, "parserActor")
 
   //TODO measure how long it takes to process a url
+  //TODO dist as a seperate bin
 
   //get the url message from main
   //send it to URL actors to get html
