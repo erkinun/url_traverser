@@ -2,6 +2,7 @@ package com.asyaminor
 
 import akka.actor.ActorSystem
 import akka.testkit.{ImplicitSender, TestKit}
+import com.asyaminor.MediatorActor.HtmlResponse
 import org.scalatest.{BeforeAndAfterAll, Matchers, WordSpecLike}
 
 /**
@@ -19,8 +20,7 @@ with WordSpecLike with Matchers with BeforeAndAfterAll {
   "A Url actor" must {
     "send back a ack on a UrlMessage" in {
       val urlActor = system.actorOf(UrlActor.props)
-      urlActor ! MediatorActor.UrlMessage("www.google.com")
-      //expectMsg(UrlActor.Ack)
+      urlActor ! MediatorActor.UrlMessage("http://www.google.com")
     }
   }
 }
