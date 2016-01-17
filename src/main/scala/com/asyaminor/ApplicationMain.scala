@@ -57,6 +57,9 @@ object ApplicationMain extends App {
       case "q" =>
         println("quitting...")
         shutDown()
+      case "" =>
+        println("empty line!!")
+        handleIO()
       case _ =>
         println("will handle url: " + url)
         callMediatorActor(url)
