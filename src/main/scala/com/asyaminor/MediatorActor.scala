@@ -13,9 +13,8 @@ class MediatorActor extends Actor with ActorLogging {
   //store a set for already visited urls
   var visited: Set[String] = Set()
 
-  val system = ActorSystem("UrlActorSystem")
-  val urlActor = system.actorOf(UrlActor.props, "urlActor")
-  val parseActor = system.actorOf(ParserActor.props, "parserActor")
+  val urlActor = context.actorOf(UrlActor.props, "urlActor")
+  val parseActor = context.actorOf(ParserActor.props, "parserActor")
   //TODO measure how long it takes to process a url
   //TODO build a tree of urls
   //TODO debug the code, trace it
