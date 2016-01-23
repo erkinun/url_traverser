@@ -1,6 +1,5 @@
 package com.asyaminor
 
-import akka.actor.ActorSystem
 import akka.actor.{Props, Actor, ActorLogging}
 import com.asyaminor.MediatorActor.{ShutDownMsg, HtmlResponse, UrlMessage}
 import com.asyaminor.ParserActor.HtmlMessage

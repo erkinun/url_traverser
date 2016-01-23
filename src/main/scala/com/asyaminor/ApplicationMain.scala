@@ -7,6 +7,8 @@ import scala.io.StdIn
 
 object ApplicationMain extends App {
 
+  val system = ActorSystem("UrlActorSystem")
+  val mediator = system.actorOf(MediatorActor.props, "mediator")
 
   //TODO add nice --help section for the app
   //that shows the possible commands and parameters
@@ -30,21 +32,12 @@ object ApplicationMain extends App {
 
     //when you are finished, ask for another url
 
-    val system = ActorSystem("UrlActorSystem")
-
-    val mediator = system.actorOf(MediatorActor.props, "mediator")
     mediator ! MediatorActor.UrlMessage(fullUrl)
 
     println("mediator actor got the msg")
   }
 
   def shutDown(): Unit = {
-    //val system = ActorSystem("UrlActorSystem")
-
-    //system.shutdown()
-    val system = ActorSystem("UrlActorSystem")
-
-    val mediator = system.actorOf(MediatorActor.props, "mediator")
     mediator ! MediatorActor.ShutDownMsg("user quitted")
   }
 
