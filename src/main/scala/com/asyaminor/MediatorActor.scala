@@ -19,6 +19,7 @@ class MediatorActor extends Actor with ActorLogging {
   //TODO measure how long it takes to process a url
   //TODO build a tree of urls
   //TODO debug the code, trace it
+  //TODO stop after a lot of visited url hits
 
   def dumpLinks() = {
     val pw = new PrintWriter(new File("links.txt"))
