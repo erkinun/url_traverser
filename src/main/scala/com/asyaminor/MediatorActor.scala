@@ -39,7 +39,7 @@ class MediatorActor extends Actor with ActorLogging {
       log.info(s"$url is fetched with content length $size")
       log.debug(s"content is: $html")
 
-      parseActor ! HtmlMessage(html)
+      parseActor ! HtmlMessage(html, url)
     case ShutDownMsg(reason) =>
       context.system.terminate()
   }
