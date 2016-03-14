@@ -1,7 +1,9 @@
 package com.asyaminor
 
+import java.io.{File, PrintWriter}
+
 import akka.actor.{Props, Actor, ActorLogging}
-import com.asyaminor.MediatorActor.{ShutDownMsg, HtmlResponse, UrlMessage}
+import com.asyaminor.MediatorActor.{DumpLinksMsg, ShutDownMsg, HtmlResponse, UrlMessage}
 import com.asyaminor.ParserActor.HtmlMessage
 
 /**
@@ -17,6 +19,14 @@ class MediatorActor extends Actor with ActorLogging {
   //TODO measure how long it takes to process a url
   //TODO build a tree of urls
   //TODO debug the code, trace it
+
+  def dumpLinks() = {
+    val pw = new PrintWriter(new File("links.txt"))
+
+    visited foreach(link => pw.write(s"$link\n"))
+
+    pw.close()
+  }
 
   //get the url message from main
   //send it to URL actors to get html
@@ -40,6 +50,10 @@ class MediatorActor extends Actor with ActorLogging {
       log.debug(s"content is: $html")
 
       parseActor ! HtmlMessage(html, url)
+    case DumpLinksMsg(msg) =>
+      log.info("will store the links to links.txt")
+      dumpLinks()
+      context.system.terminate()
     case ShutDownMsg(reason) =>
       context.system.terminate()
   }
@@ -50,4 +64,6 @@ object MediatorActor {
   case class UrlMessage(url: String)
   case class HtmlResponse(html: String, url: String)
   case class ShutDownMsg(reason: String)
+  case class DumpLinksMsg(msg: String)
+
 }

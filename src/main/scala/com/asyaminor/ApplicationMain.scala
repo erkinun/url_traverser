@@ -41,6 +41,10 @@ object ApplicationMain extends App {
     mediator ! MediatorActor.ShutDownMsg("user quitted")
   }
 
+  def dumpLinks(): Unit = {
+    mediator ! MediatorActor.DumpLinksMsg("user wants dump!")
+  }
+
   def handleIO(): Unit = {
     println("enter a url or 'q' to quit: ")
 
@@ -50,6 +54,9 @@ object ApplicationMain extends App {
       case "q" =>
         println("quitting...")
         shutDown()
+      case "qd" =>
+        println("dumping the links")
+        dumpLinks()
       case "" =>
         println("empty line!!")
         handleIO()
