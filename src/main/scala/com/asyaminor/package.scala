@@ -21,4 +21,8 @@ package object asyaminor {
     val t1 = System.currentTimeMillis()
     (result, (t1 - t0))
   }
+
+  def accAvg(avg: Long, index: Int, responseTime: Long): Long = {
+    ((avg * (index - 1)) + responseTime) / index
+  }
 }

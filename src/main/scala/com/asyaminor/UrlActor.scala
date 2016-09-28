@@ -20,11 +20,19 @@ class UrlActor extends Actor with ActorLogging {
     //next do 50 times and average
     //next take a look at warmup algorithms
 
+    val avgFinal = (1 to 50).foldLeft(0L)((avg, index) => {
+      val result = time {
+        Http(url).asString.body
+      }
+
+      accAvg(avg, index, result._2)
+    })
+
     val result = time{
       Http(url).asString.body
     }
 
-    (result._1, result._2)
+    (result._1, avgFinal)
   }
 
   def receive = {

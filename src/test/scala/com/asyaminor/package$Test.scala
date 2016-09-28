@@ -15,4 +15,13 @@ class package$Test extends FunSuite {
     assert("http://sporapp.com" === validateUrl("http://sporapp.com"))
   }
 
+  test("accumulating average function should return 1 after adding 1 to 0") {
+    assert(accAvg(0, 1, 1) === 1)
+  }
+
+
+  test("acc average function should return 4 after adding 3 to 5") {
+    assert(accAvg(5, 2, 3) === 4)
+  }
+
 }
