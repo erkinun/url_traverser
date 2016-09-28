@@ -1,8 +1,8 @@
 package com.asyaminor
 
 import akka.actor.ActorSystem
-import com.asyaminor.MediatorActor.ShutDownMsg
 import com.asyaminor.remote.RemoteUrlActor
+
 
 import scala.io.StdIn
 
@@ -23,13 +23,7 @@ object ApplicationMain extends App {
 
   def callMediatorActor(url: String) = {
 
-    //validate somehow
-    val fullUrl = if (url.contains("http")) {
-      url
-    }
-    else {
-      "http://" + url
-    }
+    val fullUrl: String = validateUrl(url)
 
     //ask a url actor to traverse it
     //this may become a mediator in future
@@ -49,6 +43,10 @@ object ApplicationMain extends App {
     mediator ! MediatorActor.DumpLinksMsg("user wants dump!")
   }
 
+  def measurePerf(host: String): Unit = {
+    mediator ! MediatorActor.PerformanceMsg(validateUrl(host))
+  }
+
   def handleIO(): Unit = {
     println("enter a url or 'q' to quit: ")
 
@@ -56,11 +54,7 @@ object ApplicationMain extends App {
 
     url match {
       case "-h" =>
-        println("q for quit")
-        println("-h for this help screen")
-        println("-test to test remote actor")
-        println("qd to dump the links")
-        println("any other string to traverse the links on it")
+        helpText
         handleIO()
       case "-test" =>
         println("testing the remote actor")
@@ -72,6 +66,11 @@ object ApplicationMain extends App {
       case "qd" =>
         println("dumping the links")
         dumpLinks()
+      case urlx if urlx.startsWith("--measure") =>
+        val host = urlx.replace("--measure", "").trim
+        println(s"we are going to measure: $host")
+        measurePerf(host)
+        handleIO()
       case "" =>
         println("empty line!!")
         handleIO()
@@ -80,5 +79,14 @@ object ApplicationMain extends App {
         callMediatorActor(url)
         handleIO()
     }
+  }
+
+  def helpText: Unit = {
+    println("q for quit")
+    println("-h for this help screen")
+    println("-test to test remote actor")
+    println("qd to dump the links")
+    println("--measure site , to measure performance of a site")
+    println("any other string to traverse the links on it")
   }
 }

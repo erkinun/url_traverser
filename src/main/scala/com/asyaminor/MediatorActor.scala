@@ -3,7 +3,7 @@ package com.asyaminor
 import java.io.{File, PrintWriter}
 
 import akka.actor.{Props, Actor, ActorLogging}
-import com.asyaminor.MediatorActor.{DumpLinksMsg, ShutDownMsg, HtmlResponse, UrlMessage}
+import com.asyaminor.MediatorActor._
 import com.asyaminor.ParserActor.HtmlMessage
 
 /**
@@ -55,6 +55,11 @@ class MediatorActor extends Actor with ActorLogging {
       log.info("will store the links to links.txt")
       dumpLinks()
       context.system.terminate()
+    case PerformanceMsg(url) =>
+      log.info(s"will measure performance of response times of $url")
+      urlActor ! PerformanceMsg(url)
+    case PerformanceResponse(body, url, time) =>
+      log.info(s"got response for $url with the response time $time ms")
     case ShutDownMsg(reason) =>
       context.system.terminate()
   }
@@ -66,5 +71,7 @@ object MediatorActor {
   case class HtmlResponse(html: String, url: String)
   case class ShutDownMsg(reason: String)
   case class DumpLinksMsg(msg: String)
+  case class PerformanceMsg(url: String)
+  case class PerformanceResponse(html: String, url: String, time: Long)
 
 }

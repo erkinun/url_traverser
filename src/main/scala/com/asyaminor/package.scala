@@ -14,4 +14,11 @@ package object asyaminor {
 
     fullUrl
   }
+
+  def time[R](block: => R): (R, Long) = {
+    val t0 = System.currentTimeMillis()
+    val result = block    // call-by-name
+    val t1 = System.currentTimeMillis()
+    (result, (t1 - t0))
+  }
 }
