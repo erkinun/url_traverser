@@ -66,6 +66,9 @@ object ApplicationMain extends App {
       case "qd" =>
         println("dumping the links")
         dumpLinks()
+        //TODO 1 - add a cron style running for a period of time, say for 2 hours every 1 minute
+        //TODO 2 - add a file/command line option to get a list of urls to ping
+        //TODO 3 - maybe use some parser combinators? 
       case urlx if urlx.startsWith("--measure") =>
         val host = urlx.replace("--measure", "").trim
         println(s"we are going to measure: $host")

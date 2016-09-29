@@ -32,6 +32,7 @@ class UrlActor extends Actor with ActorLogging {
     val result = time{
       val response = Http(url).asString
       log.info(s"body fetched ${response.statusLine}")
+      response.headers.foreach(header => log.debug(s"header: ${header._1} -> values: ${header._2}"))
       Http(url).asString.body
     }
 
