@@ -37,7 +37,7 @@ class MediatorActor extends Actor with ActorLogging {
   def storePerformanceDataToDisk(url: String, time: Long): Unit = {
     //TODO write the files to a tmp folder
     val perfDir = "/tmp/perf"
-    val fileName = s"$perfDir/${url.replace("http://", "")}.txt"
+    val fileName = s"$perfDir/${getHost(url).get}.txt"
 
     if (!Files.exists(Paths.get(perfDir))) {
       Files.createDirectories(Paths.get(perfDir))
