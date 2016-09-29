@@ -1,6 +1,8 @@
 package com.asyaminor
 
 import java.io.{File, PrintWriter}
+import java.nio.charset.Charset
+import java.nio.file.{Paths, Files}
 
 import akka.actor.{Props, Actor, ActorLogging}
 import com.asyaminor.MediatorActor._
@@ -27,6 +29,19 @@ class MediatorActor extends Actor with ActorLogging {
     visited foreach(link => pw.write(s"$link\n"))
 
     pw.close()
+  }
+
+  def storePerformanceDataToDisk(url: String, time: Long): Unit = {
+    //TODO write the files to a tmp folder
+    val fileName = s"${url.replace("http://", "")}.txt"
+    if (!Files.exists(Paths.get(fileName))) {
+      Files.createFile(Paths.get(fileName))
+    }
+
+    val line = s"url: $url has a performance to http requests: $time ms"
+
+    import collection.JavaConverters._
+    Files.write(Paths.get(fileName), List(line).asJava, Charset.defaultCharset())
   }
 
   //get the url message from main
@@ -60,6 +75,7 @@ class MediatorActor extends Actor with ActorLogging {
       urlActor ! PerformanceMsg(url)
     case PerformanceResponse(body, url, time) =>
       log.info(s"got response for $url with the response time $time ms")
+      storePerformanceDataToDisk(url, time)
     case ShutDownMsg(reason) =>
       context.system.terminate()
   }

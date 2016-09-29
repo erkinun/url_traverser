@@ -4,5 +4,7 @@ target
 .idea
 .sbtserver
 concepts.sc
+*.com.txt
+
 
 
