@@ -2,6 +2,9 @@ package com
 
 import java.io.{FileWriter, PrintWriter}
 
+import scala.util.Try
+import java.net.URL
+
 /**
   * Created by eunlu on 10/09/2016.
   */
@@ -37,4 +40,10 @@ package object asyaminor {
         printWriter => printWriter.println(textData)
       }
     }
+
+  def getHost(url: String): Try[String] = {
+    Try {
+      new URL(url).getHost
+    }
+  }
 }
