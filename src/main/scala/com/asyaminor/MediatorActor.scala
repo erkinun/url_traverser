@@ -6,7 +6,7 @@ import java.nio.file.{Paths, Files}
 
 import akka.actor.{Props, Actor, ActorLogging}
 import com.asyaminor.MediatorActor._
-import com.asyaminor.ParserActor.HtmlMessage
+import com.asyaminor.ParserActor.{PerformanceHtmlMessage, HtmlMessage}
 
 /**
   * Created by ERKIN on 14/12/2015.
@@ -84,6 +84,9 @@ class MediatorActor extends Actor with ActorLogging {
     case PerformanceResponse(body, url, time) =>
       log.info(s"got response for $url with the response time $time ms")
       storePerformanceDataToDisk(url, time)
+
+      //parseActor ! PerformanceHtmlMessage(body, url)
+
     case ShutDownMsg(reason) =>
       context.system.terminate()
   }

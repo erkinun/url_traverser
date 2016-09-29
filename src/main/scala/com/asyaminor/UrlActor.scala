@@ -22,13 +22,16 @@ class UrlActor extends Actor with ActorLogging {
 
     val avgFinal = (1 to 50).foldLeft(0L)((avg, index) => {
       val result = time {
-        Http(url).asString.body
+        val response = Http(url).asString
+        response.body
       }
 
       accAvg(avg, index, result._2)
     })
 
     val result = time{
+      val response = Http(url).asString
+      log.info(s"body fetched ${response.statusLine}")
       Http(url).asString.body
     }
 
