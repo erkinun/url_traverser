@@ -24,6 +24,7 @@ class MediatorActor extends Actor with ActorLogging {
   //TODO stop after a lot of visited url hits
 
   def dumpLinks() = {
+    //TODO remove java.io.File api
     val pw = new PrintWriter(new File("links.txt"))
 
     visited foreach(link => pw.write(s"$link\n"))
@@ -33,7 +34,13 @@ class MediatorActor extends Actor with ActorLogging {
 
   def storePerformanceDataToDisk(url: String, time: Long): Unit = {
     //TODO write the files to a tmp folder
-    val fileName = s"${url.replace("http://", "")}.txt"
+    val perfDir = "/tmp/perf"
+    val fileName = s"$perfDir/${url.replace("http://", "")}.txt"
+
+    if (!Files.exists(Paths.get(perfDir))) {
+      Files.createDirectories(Paths.get(perfDir))
+    }
+
     if (!Files.exists(Paths.get(fileName))) {
       Files.createFile(Paths.get(fileName))
     }
