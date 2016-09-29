@@ -1,6 +1,6 @@
 package com.asyaminor
 
-import java.io.{File, PrintWriter}
+import java.io.{FileWriter, BufferedWriter, File, PrintWriter}
 import java.nio.charset.Charset
 import java.nio.file.{Paths, Files}
 
@@ -32,6 +32,8 @@ class MediatorActor extends Actor with ActorLogging {
     pw.close()
   }
 
+
+
   def storePerformanceDataToDisk(url: String, time: Long): Unit = {
     //TODO write the files to a tmp folder
     val perfDir = "/tmp/perf"
@@ -47,8 +49,7 @@ class MediatorActor extends Actor with ActorLogging {
 
     val line = s"url: $url has a performance to http requests: $time ms"
 
-    import collection.JavaConverters._
-    Files.write(Paths.get(fileName), List(line).asJava, Charset.defaultCharset())
+    appendToFile(fileName, line)
   }
 
   //get the url message from main

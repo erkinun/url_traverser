@@ -1,5 +1,7 @@
 package com
 
+import java.io.{FileWriter, PrintWriter}
+
 /**
   * Created by eunlu on 10/09/2016.
   */
@@ -25,4 +27,14 @@ package object asyaminor {
   def accAvg(avg: Long, index: Int, responseTime: Long): Long = {
     ((avg * (index - 1)) + responseTime) / index
   }
+
+  def using[A <: {def close(): Unit}, B](param: A)(f: A => B): B =
+    try { f(param) } finally { param.close() }
+
+  def appendToFile(fileName:String, textData:String) =
+    using (new FileWriter(fileName, true)){
+      fileWriter => using (new PrintWriter(fileWriter)) {
+        printWriter => printWriter.println(textData)
+      }
+    }
 }
