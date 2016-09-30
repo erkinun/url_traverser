@@ -8,6 +8,7 @@ import scalaj.http.Http
 class UrlActor extends Actor with ActorLogging {
 
   type MeasureResult = (String, Long)
+  val TRIAL_NUMBER = 20
 
   def getContent(url: String): String = {
     val fullUrl = url
@@ -20,7 +21,7 @@ class UrlActor extends Actor with ActorLogging {
     //next do 50 times and average
     //next take a look at warmup algorithms
 
-    val avgFinal = (1 to 50).foldLeft(0L)((avg, index) => {
+    val avgFinal = (1 to TRIAL_NUMBER).foldLeft(0L)((avg, index) => {
       val result = time {
         val response = Http(url).asString
         response.body
@@ -31,7 +32,7 @@ class UrlActor extends Actor with ActorLogging {
 
     val result = time{
       val response = Http(url).asString
-      log.info(s"body fetched ${response.statusLine}")
+      log.debug(s"body fetched ${response.statusLine}")
       response.headers.foreach(header => log.debug(s"header: ${header._1} -> values: ${header._2}"))
       Http(url).asString.body
     }

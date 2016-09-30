@@ -47,6 +47,11 @@ object ApplicationMain extends App {
     mediator ! MediatorActor.PerformanceMsg(validateUrl(host))
   }
 
+  def measurePerfFile(filename: String): Unit = {
+    io.Source.fromFile(filename).getLines() foreach(host =>
+      mediator ! MediatorActor.PerformanceMsg(validateUrl(host)))
+  }
+
   def handleIO(): Unit = {
     println("enter a url or 'q' to quit: ")
 
@@ -67,12 +72,15 @@ object ApplicationMain extends App {
         println("dumping the links")
         dumpLinks()
         //TODO 1 - add a cron style running for a period of time, say for 2 hours every 1 minute
-        //TODO 2 - add a file/command line option to get a list of urls to ping
-        //TODO 3 - maybe use some parser combinators? 
+        //TODO 3 - maybe use some parser combinators?
       case urlx if urlx.startsWith("--measure") =>
         val host = urlx.replace("--measure", "").trim
         println(s"we are going to measure: $host")
         measurePerf(host)
+        handleIO()
+      case urlx if urlx.startsWith("--file") =>
+        val filename = urlx.replace("--file", "").trim
+        measurePerfFile(filename)
         handleIO()
       case "" =>
         println("empty line!!")
@@ -90,6 +98,7 @@ object ApplicationMain extends App {
     println("-test to test remote actor")
     println("qd to dump the links")
     println("--measure site , to measure performance of a site")
+    println("--file filename, to measure a list of sites from a file")
     println("any other string to traverse the links on it")
   }
 }
