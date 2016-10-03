@@ -1,10 +1,14 @@
 package com.asyaminor
 
+import java.util.{TimerTask, Timer}
 import akka.actor.ActorSystem
 import com.asyaminor.remote.RemoteUrlActor
 
 
 import scala.io.StdIn
+import scala.concurrent._
+import scala.concurrent.duration._
+import ExecutionContext.Implicits.global
 
 object ApplicationMain extends App {
 
@@ -52,6 +56,26 @@ object ApplicationMain extends App {
       mediator ! MediatorActor.PerformanceMsg(validateUrl(host)))
   }
 
+  def profileForFile(filename: String): Unit = {
+    // will work for one hour
+    // will work every one minute
+
+    val profileFuture = Future {
+      val t = new Timer()
+      val task = new TimerTask {
+        override def run(): Unit = {
+          println(s"profiling using file: $filename")
+          measurePerfFile(filename)
+        }
+      }
+
+      t.schedule(task, 0L, 1000L * 60)
+    }
+
+    Await.result(profileFuture, 1 hour)
+
+  }
+
   def handleIO(): Unit = {
     println("enter a url or 'q' to quit: ")
 
@@ -72,7 +96,7 @@ object ApplicationMain extends App {
         println("dumping the links")
         dumpLinks()
         //TODO 1 - add a cron style running for a period of time, say for 2 hours every 1 minute
-        //TODO 3 - maybe use some parser combinators?
+        //TODO 3 - maybe use some parser combinators? //take a look at http://stackoverflow.com/a/3183991/219586
       case urlx if urlx.startsWith("--measure") =>
         val host = urlx.replace("--measure", "").trim
         println(s"we are going to measure: $host")
@@ -82,6 +106,9 @@ object ApplicationMain extends App {
         val filename = urlx.replace("--file", "").trim
         measurePerfFile(filename)
         handleIO()
+      case urlx if urlx.startsWith("--profile") =>
+        val filename = urlx.replace("--profile", "").trim
+        profileForFile(filename)
       case "" =>
         println("empty line!!")
         handleIO()
@@ -99,6 +126,7 @@ object ApplicationMain extends App {
     println("qd to dump the links")
     println("--measure site , to measure performance of a site")
     println("--file filename, to measure a list of sites from a file")
+    println("--profile filename, to profile a collection of hosts for one hour")
     println("any other string to traverse the links on it")
   }
 }
