@@ -35,7 +35,6 @@ class MediatorActor extends Actor with ActorLogging {
 
 
   def storePerformanceDataToDisk(url: String, time: Long): Unit = {
-    //TODO write the files to a tmp folder
     val perfDir = "/tmp/perf"
     val fileName = s"$perfDir/${getHost(url).get}.txt"
 
@@ -50,6 +49,17 @@ class MediatorActor extends Actor with ActorLogging {
     val line = s"url: $url has a performance to http requests: $time ms"
 
     appendToFile(fileName, line)
+  }
+
+  def compareFindings(url: String, time: Long, avg: Long): Unit = {
+    //find the difference percentage
+
+    log.info(s"host: $url has average response time of: $avg and this current response time: $time")
+
+    val difPerc = ((time - avg) / avg.toFloat) * 100
+
+    if (difPerc > 0) log.info(s"host: $url currently performs ${difPerc.toInt} % worse")
+    else log.info(s"host $url currently performs ${Math.abs(difPerc).toInt} % better")
   }
 
   //get the url message from main
@@ -78,6 +88,9 @@ class MediatorActor extends Actor with ActorLogging {
       log.info("will store the links to links.txt")
       dumpLinks()
       context.system.terminate()
+    case ComparisonMsg(url, avg) =>
+      log.info(s"will compare host: $url's average response time: $avg")
+      urlActor ! ComparisonMsg(url, avg)
     case PerformanceMsg(url) =>
       log.info(s"will measure performance of response times of $url")
       urlActor ! PerformanceMsg(url)
@@ -86,6 +99,9 @@ class MediatorActor extends Actor with ActorLogging {
       storePerformanceDataToDisk(url, time)
 
       //parseActor ! PerformanceHtmlMessage(body, url)
+
+    case ComparisonRespMsg(url, time, avg) =>
+      compareFindings(url, time, avg)
 
     case ShutDownMsg(reason) =>
       context.system.terminate()
@@ -99,6 +115,8 @@ object MediatorActor {
   case class ShutDownMsg(reason: String)
   case class DumpLinksMsg(msg: String)
   case class PerformanceMsg(url: String)
+  case class ComparisonMsg(url: String, avg: Long)
+  case class ComparisonRespMsg(url: String, time: Long, avg: Long)
   case class PerformanceResponse(html: String, url: String, time: Long)
 
 }

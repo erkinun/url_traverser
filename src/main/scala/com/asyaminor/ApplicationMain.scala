@@ -2,10 +2,12 @@ package com.asyaminor
 
 import java.util.{TimerTask, Timer}
 import akka.actor.ActorSystem
+import com.asyaminor.MediatorActor.ComparisonMsg
 import com.asyaminor.remote.RemoteUrlActor
 
 
 import scala.io.StdIn
+import io.Source
 import scala.concurrent._
 import scala.concurrent.duration._
 import ExecutionContext.Implicits.global
@@ -51,8 +53,35 @@ object ApplicationMain extends App {
     mediator ! MediatorActor.PerformanceMsg(validateUrl(host))
   }
 
+  def comparePerfFile(filename: String): Unit = {
+
+    val fileItself = Source.fromFile(filename)
+
+    val compareFuture = Future {
+      val t = new Timer()
+      val task = new TimerTask {
+        override def run(): Unit = {
+          println("comparing")
+          Source.fromFile(filename) getLines() foreach{ avgTuple =>
+            val (host, avg) = {
+              val words = avgTuple.split(" ")
+              (words(0), words(1))
+            }
+            println("sending comp msg")
+            mediator ! ComparisonMsg(host, avg.toFloat.toLong)
+          }
+        }
+      }
+
+      t.schedule(task, 0L, 1000L * 30)
+    }
+
+
+    Await.result(compareFuture, 1 hour)
+  }
+
   def measurePerfFile(filename: String): Unit = {
-    io.Source.fromFile(filename).getLines() foreach(host =>
+    Source.fromFile(filename).getLines() foreach(host =>
       mediator ! MediatorActor.PerformanceMsg(validateUrl(host)))
   }
 
@@ -109,6 +138,9 @@ object ApplicationMain extends App {
       case urlx if urlx.startsWith("--profile") =>
         val filename = urlx.replace("--profile", "").trim
         profileForFile(filename)
+      case command if command.startsWith("--compare") =>
+        val filename = command.replace("--compare", "").trim
+        comparePerfFile(filename)
       case "" =>
         println("empty line!!")
         handleIO()
@@ -127,6 +159,7 @@ object ApplicationMain extends App {
     println("--measure site , to measure performance of a site")
     println("--file filename, to measure a list of sites from a file")
     println("--profile filename, to profile a collection of hosts for one hour")
+    println("--compare filename, to compare to a pre calculated average response times")
     println("any other string to traverse the links on it")
   }
 }

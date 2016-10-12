@@ -1,7 +1,7 @@
 package com.asyaminor
 
 import akka.actor.{Props, ActorLogging, Actor}
-import com.asyaminor.MediatorActor.{PerformanceResponse, PerformanceMsg, HtmlResponse, UrlMessage}
+import com.asyaminor.MediatorActor._
 
 import scalaj.http.Http
 
@@ -18,7 +18,7 @@ class UrlActor extends Actor with ActorLogging {
 
   def measureHost(url: String): MeasureResult = {
     //first just get the response and calculate
-    //next do 50 times and average
+    //next do 20 times and average
     //next take a look at warmup algorithms
 
     val avgFinal = (1 to TRIAL_NUMBER).foldLeft(0L)((avg, index) => {
@@ -52,7 +52,13 @@ class UrlActor extends Actor with ActorLogging {
       val (body, time) = measureHost(url)
 
       sender() ! PerformanceResponse(body, url, time)
+
+    case ComparisonMsg(url, avg) =>
+      val (body, time) = measureHost(url)
+
+      sender() ! ComparisonRespMsg(url, time, avg)
   }
+
 }
 
 object UrlActor {
