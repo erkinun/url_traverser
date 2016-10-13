@@ -5,6 +5,7 @@ target
 .sbtserver
 concepts.sc
 *.com.txt
+files/
 
 
 
